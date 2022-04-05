@@ -10,7 +10,9 @@
  * @return {double}         : latitude
  */
 double TrojanMap::GetLat(const std::string& id) {
+  if(data.find(id)!=data.end())
     return 0;
+    return -1.0;
 }
 
 /**
@@ -96,6 +98,18 @@ std::string TrojanMap::FindClosestName(std::string name) {
  */
 std::vector<std::string> TrojanMap::Autocomplete(std::string name){
   std::vector<std::string> results;
+  for(auto str : data){
+    std::string loc_name = str.second.name;
+    std::string lower="";
+    lower.resize(loc_name.size());
+    std::transform(loc_name.begin(),loc_name.end(),lower.begin(),::tolower);
+    std::string lowername="";
+    lowername.resize(name.size());
+    std::transform(name.begin(),name.end(),lowername.begin(),::tolower);
+    if(lower.find(lowername)==0){
+      results.push_back(loc_name);
+    }
+  }
   return results;
 }
 
