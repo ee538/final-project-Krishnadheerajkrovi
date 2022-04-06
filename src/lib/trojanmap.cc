@@ -11,8 +11,16 @@
  */
 double TrojanMap::GetLat(const std::string& id) {
   if(data.find(id)!=data.end())
-    return 0;
-    return -1.0;
+  {
+    return -1;
+  }
+  else
+  {
+    return data[id].lat;
+    // return 0;
+  }
+    // return 0;
+  //   return -1.0;
 }
 
 /**
@@ -22,7 +30,16 @@ double TrojanMap::GetLat(const std::string& id) {
  * @return {double}         : longitude
  */
 double TrojanMap::GetLon(const std::string& id) { 
-    return 0;
+  if(data.find(id)!=data.end())
+  {
+    return -1;
+  }
+  else
+  {
+    return data[id].lon;
+    // return 0;
+  }
+    // return 0;
 }
 
 /**
@@ -64,8 +81,16 @@ std::string TrojanMap::GetID(const std::string& name) {
  * @return {std::pair<double,double>}  : (lat, lon)
  */
 std::pair<double, double> TrojanMap::GetPosition(std::string name) {
-  std::pair<double, double> results(-1, -1);
-  return results;
+  for (auto str : data)
+  {
+    if (name == str.second.name)
+    {
+      std::pair<double, double> results(str.second.lat, str.second.lon);
+      return results;
+    }
+  }
+  std::pair<double, double> no_results(-1, -1);
+  return no_results;
 }
 
 
