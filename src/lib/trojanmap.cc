@@ -1,6 +1,6 @@
 #include "trojanmap.h"
 #include <unordered_map>
-
+#include<bits/stdc++.h>
 //-----------------------------------------------------
 // TODO: Student should implement the following:
 //-----------------------------------------------------
@@ -101,24 +101,27 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name) {
  */
 int TrojanMap::CalculateEditDistance(std::string a, std::string b){
   int distance = 0;
-  if (a.size() > b.size())
+  int m = a.size();
+  int n = b.size();
+  int D[2][m+1];
+  memset(D,0,sizeof(D));
+  for(int i=0;i<=m;i++)
+    D[0][i] = i;
+  for(int i=1;i<=n;i++)
   {
-    b.resize(a.size());
-  }
-  if (b.size() > a.size())
-  {
-    a.resize(b.size());
-  }
-  for (int i = 0; i < a.size(); i++)
-  {
-    if (a[i] != b[i])
+    for(int j=0;j<=m;j++)
     {
-      distance += 1;
+      if(j==0)
+      D[i%2][j] = i; 
+    else if(a[j-1] == b[i-1]){
+      D[i%2][j] = D[(i-1)%2][j-1];
+    }
+    else{
+      D[i%2][j]=1 + std::min(D[(i-1)%2][j],std::min(D[i%2][j-1],D[(i-1)%2][j-1]));
+      }
     }
   }
-
-  return distance;
-    // return 0;
+  return D[n%2][m];
 }
 
 /**
