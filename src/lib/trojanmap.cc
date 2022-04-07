@@ -100,11 +100,9 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name) {
  * 
  */
 int TrojanMap::CalculateEditDistance(std::string a, std::string b){
-  int distance = 0;
   int m = a.size();
   int n = b.size();
   int D[2][m+1];
-  memset(D,0,sizeof(D));
   for(int i=0;i<=m;i++)
     D[0][i] = i;
   for(int i=1;i<=n;i++)
@@ -154,6 +152,7 @@ std::string TrojanMap::FindClosestName(std::string name) {
  */
 std::vector<std::string> TrojanMap::Autocomplete(std::string name){
   std::vector<std::string> results;
+  name.erase(remove(name.begin(), name.end(), ' '), name.end());
   for(auto str : data){
     std::string loc_name = str.second.name;
     std::string lower="";
