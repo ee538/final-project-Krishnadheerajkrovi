@@ -1,4 +1,5 @@
 #include "trojanmap.h"
+#include <unordered_map>
 
 //-----------------------------------------------------
 // TODO: Student should implement the following:
@@ -99,7 +100,25 @@ std::pair<double, double> TrojanMap::GetPosition(std::string name) {
  * 
  */
 int TrojanMap::CalculateEditDistance(std::string a, std::string b){
-    return 0;
+  int distance = 0;
+  if (a.size() > b.size())
+  {
+    b.resize(a.size());
+  }
+  if (b.size() > a.size())
+  {
+    a.resize(b.size());
+  }
+  for (int i = 0; i < a.size(); i++)
+  {
+    if (a[i] != b[i])
+    {
+      distance += 1;
+    }
+  }
+
+  return distance;
+    // return 0;
 }
 
 /**
@@ -109,6 +128,15 @@ int TrojanMap::CalculateEditDistance(std::string a, std::string b){
  * @return {std::string} tmp           : similar name
  */
 std::string TrojanMap::FindClosestName(std::string name) {
+  // std::unordered_map<str::string,int>memo;
+  // for (auto str:data)
+  // data_name = str.second.name;
+  // {
+  //   if(memo.count(data_name)<=0)
+  //   {
+  //     memo[data_name] = TrojanMap::CalculateEditDistance(name,data_name);
+  //   }
+  // }
   std::string tmp = "";
   return tmp;
 }
