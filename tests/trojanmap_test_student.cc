@@ -66,3 +66,25 @@ TEST(TrojanMapTest, CalculateEditDistance) {
   EXPECT_EQ(m.CalculateEditDistance("hmm",""),3);
   EXPECT_EQ(m.CalculateEditDistance("",""),0);
 }
+
+//Test FindPosition function
+TEST(TrojanMapTest, FindPosition) {
+  TrojanMap m;
+  
+  // Test Chick-fil-A
+  auto position = m.GetPosition("Chick-fil-A");
+  std::pair<double, double> gt1(34.0167334, -118.2825307); // groundtruth for "Chick-fil-A"
+  EXPECT_EQ(position, gt1);
+  // Test Ralphs
+  position = m.GetPosition("Ralphs");
+  std::pair<double, double> gt2(34.0317653, -118.2908339); // groundtruth for "Ralphs"
+  EXPECT_EQ(position, gt2);
+  // Test Target
+  position = m.GetPosition("Target");
+  std::pair<double, double> gt3(34.0257016, -118.2843512); // groundtruth for "Target"
+  EXPECT_EQ(position, gt3);
+  // Test Unknown
+  position = m.GetPosition("XXX");
+  std::pair<double, double> gt4(-1, -1);
+  EXPECT_EQ(position, gt4);
+}
