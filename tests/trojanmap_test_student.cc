@@ -88,3 +88,11 @@ TEST(TrojanMapTest, FindPosition) {
   std::pair<double, double> gt4(-1, -1);
   EXPECT_EQ(position, gt4);
 }
+
+
+TEST(TrojanMapTest, FindClosestName) {
+  TrojanMap m;
+  EXPECT_EQ(m.FindClosestName("Rolphs"), "Ralphs");
+  EXPECT_EQ(m.FindClosestName("Targeety"), "Target");
+  EXPECT_EQ(m.FindClosestName("Chasee"), "Chase");
+}

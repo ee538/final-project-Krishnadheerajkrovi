@@ -1,6 +1,10 @@
 #include "trojanmap.h"
+#include<map>
 #include <unordered_map>
+#include<limits>
 #include<bits/stdc++.h>
+#include <algorithm>
+
 //-----------------------------------------------------
 // TODO: Student should implement the following:
 //-----------------------------------------------------
@@ -129,17 +133,32 @@ int TrojanMap::CalculateEditDistance(std::string a, std::string b){
  * @return {std::string} tmp           : similar name
  */
 std::string TrojanMap::FindClosestName(std::string name) {
-  // std::unordered_map<str::string,int>memo;
-  // for (auto str:data)
-  // data_name = str.second.name;
-  // {
-  //   if(memo.count(data_name)<=0)
-  //   {
-  //     memo[data_name] = TrojanMap::CalculateEditDistance(name,data_name);
-  //   }
-  // }
-  std::string tmp = "";
-  return tmp;
+  std::map<std::string, int> memo;
+  for (auto str:data)
+  {
+    
+    std::string data_name = str.second.name;
+    if (memo.count(data_name) < 1)
+    {
+      memo[data_name] = TrojanMap::CalculateEditDistance(name,data_name);
+      // std::cout<<memo[data_name]<<std::endl;
+    }
+    
+  }
+  // return min_map.first;
+  // return memo.begin()->first;
+  std::pair<std::string, int> min_name ("Target",10000);
+  for (auto element:memo)
+  {
+    if (element.second < min_name.second)
+    {
+      min_name.first = element.first;
+      min_name.second = element.second;
+    }
+  }
+  return min_name.first;
+  // std::string tmp = "";
+  // return tmp;
 }
 
 
