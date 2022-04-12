@@ -87,6 +87,19 @@ TEST(TrojanMapTest, FindPosition) {
   position = m.GetPosition("XXX");
   std::pair<double, double> gt4(-1, -1);
   EXPECT_EQ(position, gt4);
+  //USC Credit Union
+  position = m.GetPosition("USC Credit Union");
+  std::pair<double, double> gt5(34.0257427, -118.2852165);
+  EXPECT_EQ(position, gt5);
+  //Insomnia Cookies
+  position = m.GetPosition("Insomnia Cookies");
+  std::pair<double, double> gt6(34.0250102, -118.2852990);
+  EXPECT_EQ(position, gt6);
+
+  //Village Cobbler
+  position = m.GetPosition("Village Cobbler");
+  std::pair<double, double> gt7(34.0247851, -118.2841052);
+  EXPECT_EQ(position, gt7);
 }
 
 
@@ -95,4 +108,7 @@ TEST(TrojanMapTest, FindClosestName) {
   EXPECT_EQ(m.FindClosestName("Rolphs"), "Ralphs");
   EXPECT_EQ(m.FindClosestName("Targeety"), "Target");
   EXPECT_EQ(m.FindClosestName("Chasee"), "Chase");
+  EXPECT_EQ(m.FindClosestName("Breadwey & Wahington"), "Broadway & Washington");
+  EXPECT_EQ(m.FindClosestName("Adam  Flower"), "Adams & Flower");
+  EXPECT_EQ(m.FindClosestName("USC Dedit Union"), "USC Credit Union");
 }
