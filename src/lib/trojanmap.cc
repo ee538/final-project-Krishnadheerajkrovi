@@ -54,7 +54,14 @@ double TrojanMap::GetLon(const std::string& id) {
  * @return {std::string}    : name
  */
 std::string TrojanMap::GetName(const std::string& id) { 
+    if(data.find(id)!=data.end())
+  {
     return "";
+  }
+  else
+  {
+    return data[id].name;
+  }
 }
 
 /**
@@ -64,7 +71,14 @@ std::string TrojanMap::GetName(const std::string& id) {
  * @return {std::vector<std::string>}  : neighbor ids
  */
 std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string& id) {
+    if(data.find(id)!=data.end())
+  {
     return {};
+  }
+  else
+  {
+    return data[id].neighbors;
+  }
 }
 
 /**
@@ -75,10 +89,15 @@ std::vector<std::string> TrojanMap::GetNeighborIDs(const std::string& id) {
  * @return {int}  : id
  */
 std::string TrojanMap::GetID(const std::string& name) {
-  std::string res = "";
-  return res;
+for (auto str : data)
+  {
+    if (name == str.second.name)
+    {
+      return str.second.id;
+    }
+  }
+  return "";
 }
-
 /**
  * GetPosition: Given a location name, return the position. If id does not exist, return (-1, -1).
  *
@@ -230,10 +249,62 @@ double TrojanMap::CalculatePathLength(const std::vector<std::string> &path) {
  */
 std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::string location1_name, std::string location2_name) {
-  std::vector<std::string> path;
+    std::vector<std::string> path;
+    std::string start = GetID(location1_name);
+    std::string end = GetID(location2_name);
+    std::cout << start + "   " + end << std::endl; 
+    std::priority_queue <std::pair<double,std::string>,std::vector<std::pair<double,std::string>>,std::greater<std::pair<double,std::string>>> minim_heap;                 //Priority queue to implement Heap with <distance,node ID>
+    std::unordered_map <std::string,double> dist;                 //Unordered Map to store the distance from root to current node
+    for(auto pair:data){
+      dist[pair.second.id] = DBL_MAX;
+    }
+    std::unordered_map <std::string,std::string> predecessor;   //Unordered map to store the predecessor of the node
+    std::unordered_map <std::string,bool> visited;          //Unord Map to keep track if node is visited
+    for(auto pair:data){
+      visited[pair.second.id] = false;
+    }
+    //visited[start] = true;
+    dist[start] = 0;
+    minim_heap.push(std::make_pair(dist[start],start));
+    while(!minim_heap.empty()){
+      std::string current = minim_heap.top().second;
+      minim_heap.pop();
+      if(current!=end){
+        //std::cout<<"HERE!!!";
+        if(CalculateDistance(current,start)>dist[current]){
+          continue;
+        }
+        else if(visited[current]){
+          continue;
+        }
+        else{
+          visited[current] = true;
+          for(auto neighbour : data[current].neighbors){
+            double new_dist = dist[current] + CalculateDistance(current,neighbour);
+             if(dist[neighbour]>new_dist){
+               dist[neighbour] = new_dist;
+               predecessor[neighbour] = current;   
+               minim_heap.push(std::make_pair(dist[neighbour],neighbour));          
+          }
+          }
+        }
+      }
+      else{
+      //std::cout<<"HERE!!!";
+      visited[end] = true;
+      break;
+      }
+    }
+    if(!visited[end])
+     return path;
+    for(auto node = end; node!= start; node = predecessor[node])
+    {
+      path.push_back(node);
+    }
+    path.push_back(start);
+    std::reverse(path.begin(),path.end());
   return path;
 }
-
 /**
  * CalculateShortestPath_Bellman_Ford: Given 2 locations, return the shortest path which is a
  * list of id. Hint: Do the early termination when there is no change on distance.
