@@ -255,15 +255,14 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::cout << start + "   " + end << std::endl; 
     std::priority_queue <std::pair<double,std::string>,std::vector<std::pair<double,std::string>>,std::greater<std::pair<double,std::string>>> minim_heap;                 //Priority queue to implement Heap with <distance,node ID>
     std::unordered_map <std::string,double> dist;                 //Unordered Map to store the distance from root to current node
-    for(auto pair:data){
-      dist[pair.second.id] = DBL_MAX;
+    for(auto nodes:data){
+      dist[nodes.second.id] = DBL_MAX;
     }
     std::unordered_map <std::string,std::string> predecessor;   //Unordered map to store the predecessor of the node
     std::unordered_map <std::string,bool> visited;          //Unord Map to keep track if node is visited
-    for(auto pair:data){
-      visited[pair.second.id] = false;
+    for(auto nodes:data){
+      visited[nodes.second.id] = false;
     }
-    //visited[start] = true;
     dist[start] = 0;
     minim_heap.push(std::make_pair(dist[start],start));
     while(!minim_heap.empty()){
@@ -290,7 +289,6 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
         }
       }
       else{
-      //std::cout<<"HERE!!!";
       visited[end] = true;
       break;
       }
@@ -315,8 +313,45 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
  */
 std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
     std::string location1_name, std::string location2_name){
-  std::vector<std::string> path;
-  return path;
+    std::vector<std::string> path;
+    std::string start = GetID(location1_name);
+    std::string end = GetID(location2_name);
+    std::unordered_map <std::string,double> dist;       //Unordered Map to store the distance from root to current node
+    int f = 0;
+    for(auto nodes:data){
+      dist[nodes.second.id] = DBL_MAX;
+    }
+    std::unordered_map <std::string,std::string> predecessor; //Unordered map to store the predecessor of the node
+    dist[start] = 0;
+    //std::cout << data.size();
+    if(start!=end){
+      for (int i = 0; i < data.size()-1; i++){
+        for (auto pair: data){
+            std::string current = pair.second.id;
+            for(auto neighbour : pair.second.neighbors){
+                  double new_dist = dist[current] + CalculateDistance(current,neighbour);
+                  if(dist[neighbour]>new_dist){
+                    dist[neighbour] = new_dist;
+                    predecessor[neighbour] = current;                    
+                    f++;
+                  }
+            }
+        }
+        if(f==0){
+              break;
+            }
+            f = 0;
+      }
+    }
+    if(dist[end]==DBL_MAX)
+      return path;
+    for(auto node = end; node!= start; node = predecessor[node])
+    {
+      path.push_back(node);
+    }
+    path.push_back(start);
+    std::reverse(path.begin(),path.end());
+    return path;
 }
 
 /**
