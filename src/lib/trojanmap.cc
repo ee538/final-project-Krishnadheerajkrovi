@@ -418,6 +418,7 @@ std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &l
   {
     DFSHelper(location, result, dependencies);
   } 
+  std::reverse(result.begin(),result.end());
   return result;                                             
 }
 
