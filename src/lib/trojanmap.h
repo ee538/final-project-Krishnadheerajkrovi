@@ -96,6 +96,8 @@ class TrojanMap {
   std::vector<std::string> DeliveringTrojan(std::vector<std::string> &location_names,
                                             std::vector<std::vector<std::string>> &dependencies);
 
+  void DFSHelper(std::string &root, std::vector<std::string> &result, std::vector<std::vector<std::string>> &dependencies);
+
   // Given a vector of location ids, it should reorder them such that the path
   // that covers all these points has the minimum length.
   // The return value is a pair where the first member is the total_path,

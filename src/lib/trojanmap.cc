@@ -413,8 +413,31 @@ std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std
  */
 std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &locations,
                                                      std::vector<std::vector<std::string>> &dependencies){
-  std::vector<std::string> result;
-  return result;                                                    
+  std::vector<std::string> result;      
+  for (auto location: locations)
+  {
+    DFSHelper(location, result, dependencies);
+  } 
+  return result;                                             
+}
+
+void TrojanMap::DFSHelper(std::string &root, std::vector<std::string> &result, std::vector<std::vector<std::string>> &dependencies)
+{
+  if (std::count(result.begin(), result.end(), root) == 0)
+    {
+      for (int i = 0; i < dependencies.size(); i++)
+      {
+        if (dependencies[i][0] == root)
+        {
+          if (std::count(result.begin(), result.end(), dependencies[i][1]) == 0)
+          {
+            result.push_back(dependencies[i][1]);
+            DFSHelper(dependencies[i][1], result, dependencies);
+          }
+        }
+      }
+      result.push_back(root);
+    }
 }
 
 /**
