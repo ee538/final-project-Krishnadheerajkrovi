@@ -414,7 +414,7 @@ std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std
 std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &locations,
                                                      std::vector<std::vector<std::string>> &dependencies){
   std::vector<std::string> result;
-  return result;                                                     
+  return result;                                                    
 }
 
 /**
@@ -448,9 +448,62 @@ std::vector<std::string> TrojanMap::GetSubgraph(std::vector<double> &square) {
  * @param {std::vector<double>} square: four vertexes of the square area
  * @return {bool}: whether there is a cycle or not
  */
-bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<double> &square) {
+
+ bool TrojanMap::hasCycle(std::string current_id, std::map<std::string,bool> &visited, std::string parent_id, std::vector<double> &square)
+{
+  std::map<std::string, std::string> predecessor;
+  visited[current_id] = true;
+  for (auto neighbor:data[current_id].neighbors)
+  {
+    predecessor[neighbor] = current_id;  
+    if (data[neighbor].lon > square[0] && data[neighbor].lon < square[1] && data[neighbor].lat > square[2] && data[neighbor].lat < square[3])
+    {
+      if (visited[neighbor] == false)
+      {
+        if (hasCycle(neighbor,visited,current_id,square)==true)
+        {
+          return true;
+        }
+      }
+
+      if (visited[neighbor] == true && neighbor != parent_id)
+      {
+        return true;
+      }
+    }
+  }
   return false;
 }
+
+bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<double> &square) {
+  std::map<std::string,bool> visited;
+  std::map<std::string, std::string> predecessor;
+  // bool result = false;
+
+  for (auto node:data)
+  {
+    if (node.second.lon > square[0] && node.second.lon < square[1] && node.second.lat > square[2] && node.second.lat < square[3])
+    {
+      visited[node.first] = false;
+      predecessor[node.first] = "none";
+    }
+  }
+
+  for (auto node: visited)
+  {
+    if (visited[node.first] == false)
+    {
+      std::string parent;
+      if (hasCycle(node.first,visited,parent,square)==true)
+      {
+        return true;
+      }
+    }
+  }
+
+  return false;
+}
+
 
 /**
  * FindNearby: Given a class name C, a location name L and a number r, 

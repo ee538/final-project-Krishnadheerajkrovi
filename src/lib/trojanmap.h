@@ -121,6 +121,8 @@ class TrojanMap {
   // cycle or not in this subgraph.
   bool CycleDetection(std::vector<std::string> &subgraph, std::vector<double> &square);
 
+  bool hasCycle(std::string current_id, std::map<std::string,bool> &visited, std::string parent_id, std::vector<double> &square);
+
   // Given a location id and k, find the k closest points on the map
   std::vector<std::string> FindNearby(std::string, std::string, double, int);
   
