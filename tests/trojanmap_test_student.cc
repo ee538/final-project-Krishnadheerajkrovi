@@ -144,7 +144,6 @@ TEST(TrojanMapTest, CalculateShortestPath_Dijkstra) {
   std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
   std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
   EXPECT_EQ(path, gt);
-  8
 }
 
 TEST(TrojanMapTest, CalculateShortestPath_Bellman_Ford) {
