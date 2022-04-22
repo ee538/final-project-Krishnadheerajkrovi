@@ -144,6 +144,13 @@ TEST(TrojanMapTest, CalculateShortestPath_Dijkstra) {
   std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
   std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
   EXPECT_EQ(path, gt);
+  path = m.CalculateShortestPath_Dijkstra("Starbucks","Ralphs");
+  gt = {};
+  EXPECT_EQ(path,gt);
+  path = m.CalculateShortestPath_Dijkstra("","");
+  gt = {};
+  EXPECT_EQ(path,gt);
+
 }
 
 TEST(TrojanMapTest, CalculateShortestPath_Bellman_Ford) {
@@ -176,6 +183,9 @@ TEST(TrojanMapTest, CalculateShortestPath_Bellman_Ford) {
   std::cout << "My path length: "  << m.CalculatePathLength(path) << "miles" << std::endl;
   std::cout << "GT path length: " << m.CalculatePathLength(gt) << "miles" << std::endl;
   EXPECT_EQ(path, gt);
+  path = m.CalculateShortestPath_Bellman_Ford("Starbucks","Ralphs");
+  gt = {};
+  EXPECT_EQ(path,gt);
 }
 
 TEST(TrojanMapTest, CycleDetection) {
@@ -193,12 +203,12 @@ TEST(TrojanMapTest, CycleDetection) {
   bool result2 = m.CycleDetection(sub2, square2);
   EXPECT_EQ(result2, false);
 }
-TEST(TrojanMapStudentTest, TopologicalSort3) {
-  TrojanMap m;
-  m.CreateGraphFromCSVFile();
-  std::vector<std::string> location_names = {"Ralphs", "Target", "Chipotle Mexican Grill", "CVS", "ChickfilA"};
-  std::vector<std::vector<std::string>> dependencies = {{"Target","Chipotle Mexican Grill"}, {"Target","CVS"}, {"Ralphs","CVS"}, {"Ralphs","ChickfilA"}, {"CVS", "Target"}};
-  auto result = m.DeliveringTrojan(location_names, dependencies);
-  std::vector<std::string> gt ={};
-  EXPECT_EQ(result, gt);
-}
+// TEST(TrojanMapStudentTest, TopologicalSort3) {
+//   TrojanMap m;
+//   m.CreateGraphFromCSVFile();
+//   std::vector<std::string> location_names = {"Ralphs", "Target", "Chipotle Mexican Grill", "CVS", "ChickfilA"};
+//   std::vector<std::vector<std::string>> dependencies = {{"Target","Chipotle Mexican Grill"}, {"Target","CVS"}, {"Ralphs","CVS"}, {"Ralphs","ChickfilA"}, {"CVS", "Target"}};
+//   auto result = m.DeliveringTrojan(location_names, dependencies);
+//   std::vector<std::string> gt ={};
+//   EXPECT_EQ(result, gt);
+// }
