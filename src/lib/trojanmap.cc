@@ -390,17 +390,17 @@ std::vector<std::string> TrojanMap::ReadLocationsFromCSVFile(std::string locatio
   std::vector<std::string> location_names_from_csv;
 
   std::fstream myFile;
-  myFile.open(locations_filename);
+  myFile.open(locations_filename, std::ios::in);
   std::string line;
-  while (std::getline(myFile, line))
+
+  while (std::getline(myFile, line)) 
   {
-    std::stringstream sin(line);
-    while(std::getline(sin, line, ','))
-    {
+    line.erase(std::remove(line.begin(),line.end(),','), line.end());
+    if(line!="")
       location_names_from_csv.push_back(line);
-    }
   }
-  location_names_from_csv.erase(location_names_from_csv.begin());
+  myFile.close();
+
   return location_names_from_csv;
 
 }
@@ -415,29 +415,25 @@ std::vector<std::string> TrojanMap::ReadLocationsFromCSVFile(std::string locatio
 std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std::string dependencies_filename){
   std::vector<std::vector<std::string>> dependencies_from_csv;
 
-  std::vector <std::string> record;
-  std::string line,str;
-  std::ifstream infile;
-  infile.open(dependencies_filename);
+  std::fstream myFile;
+  myFile.open(dependencies_filename, std::ios::in);
+  std::string line;
 
-    //  Read the file    
-    while (getline(infile, line)) 
-    {   std::istringstream ss (line);
-        while (getline(ss, str, ',')) 
-            record.push_back(str);
-    }
-    record.erase(record.begin());
-
-    int n = (record.size())/2;
-
-    std::vector<std::vector<std::string>> dep_temp(n);
-    for (int i = 0; i < n; i++) {
-       std::vector<std::string> & inner_vector = dep_temp[i];
-        for (int j = 0; j < 2; j++) {
-            inner_vector.push_back(record[2 * i + j]);
-        }
-    }
-  dependencies_from_csv = dep_temp;
+  std::getline(myFile, line);
+  while (std::getline(myFile, line)) {
+    //Creating 2 strings for the two locations
+    std::string loc1 , loc2;
+    auto loc = line.find(',');
+    if(loc==0 || loc==line.size()-1)
+    {
+      continue;
+    } 
+    loc1 = line.substr(0,loc);
+    loc2 = line.substr(loc+1);
+    loc2.erase(std::remove(loc2.begin(),loc2.end(),','), loc2.end());
+    dependencies_from_csv.push_back({loc1,loc2});
+  }
+  myFile.close();
 
   return dependencies_from_csv;
 }
