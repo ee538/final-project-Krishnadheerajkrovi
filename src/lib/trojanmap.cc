@@ -401,12 +401,74 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTr
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Backtracking(
                                     std::vector<std::string> location_ids) {
   std::pair<double, std::vector<std::vector<std::string>>> records;
-  return records;
+        if(location_ids.size()<=1){
+          std::vector<std::vector<std::string>> path;
+        return std::make_pair(0,path);
+        }
+
+      double min_length = DBL_MAX;
+      std::vector <std::string> temp;
+      std::vector <std::string> cur_path;
+      temp.assign(location_ids.begin()+1,location_ids.end());
+      std::sort(temp.begin(),temp.end());
+      do{
+        cur_path.push_back(location_ids[0]);
+        for(auto id:temp){
+          cur_path.push_back(id);
+        }
+        cur_path.push_back(location_ids[0]);
+      double cur_path_length = CalculatePathLength(cur_path);
+      cur_path.clear();
+      if(cur_path_length<min_length){
+        min_length = cur_path_length;
+        records.first = min_length;
+        std::vector <std::string> path ;
+        path.push_back(location_ids[0]);
+        for(auto id: temp){
+          path.push_back(id);
+        }
+        path.push_back(location_ids[0]);
+        records.second.push_back(path);
+      }
+      }
+      while(std::next_permutation(temp.begin(),temp.end()));
+      return records; 
+}
+
+std::vector<std::string> TrojanMap::twoOptSwap(const std::vector<std::string> &path, int i, int k) {
+  std::vector<std::string> swapped(path);
+  std::reverse(swapped.begin() + i, swapped.begin() + k + 1);
+  return swapped;
 }
 
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_2opt(
       std::vector<std::string> location_ids){
   std::pair<double, std::vector<std::vector<std::string>>> records;
+    
+std::vector<std::string> cur_route = location_ids;
+  cur_route.push_back(location_ids[0]);
+  bool flag = true;
+  int nums = location_ids.size();
+  // Do swap until there is no improvement
+  while(flag){
+    start_again:
+    flag = false;
+    double cur_path = CalculatePathLength(cur_route);
+    for(int i = 1; i <= nums - 2; i++){
+      for(int k = i + 1; k <= nums - 1; k++){
+        auto new_route = twoOptSwap(cur_route, i, k);
+        double new_path = CalculatePathLength(new_route);
+        if(new_path < cur_path){
+          cur_route = new_route;
+          cur_path = new_path;
+          records.first = cur_path;
+          records.second.push_back(cur_route);
+          flag = true;
+          goto start_again;
+        }
+      }
+    }
+  }
   return records;
 }
 

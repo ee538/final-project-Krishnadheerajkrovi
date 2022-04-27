@@ -129,7 +129,7 @@ class TrojanMap {
   std::vector<std::string> FindNearby(std::string, std::string, double, int);
   
   //----------------------------------------------------- User-defined functions
-
+std::vector<std::string> twoOptSwap(const std::vector<std::string> &path, int i, int k) ;
 };
 
 #endif
