@@ -664,6 +664,44 @@ bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<d
  */
 std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k) {
   std::vector<std::string> res;
+
+  std::string current_id = GetID(name);
+  std::priority_queue<std::pair<std::string,double>> locations;
+
+  //Traversing the nodes
+  for (auto node:data)
+  {
+    //Current node
+    if (node.second.id == current_id)
+    {
+      continue;
+    }
+
+    //Only traversing those locations who possess the desired attribute
+    if (node.second.attributes.count(attributesName) > 0)
+    {
+      //Calculating the sidtance of the location from the source
+      double dist = CalculateDistance(node.second.id, current_id);
+      //If place inside the radius, we continue. Else it is discarded. We also check the size of the locations list to make sure we have only the k closest locations
+      if (dist <= r && (locations.size() < k || dist < locations.top().second))
+      {
+        if (locations.size() >= k)
+        {
+          locations.pop();
+        }
+        locations.push({node.second.id, dist});
+      }
+    }
+  }
+
+  while (locations.size() != 0)
+  {
+    auto loc = locations.top();
+    res.push_back(loc.first);
+    locations.pop();
+
+  }
+  // std::reverse(res.begin(),res.end());
   return res;
 }
 
