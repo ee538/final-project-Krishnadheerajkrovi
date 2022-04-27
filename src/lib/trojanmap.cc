@@ -404,11 +404,48 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTr
   return records;
 }
 
+
 std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_2opt(
       std::vector<std::string> location_ids){
-  std::pair<double, std::vector<std::vector<std::string>>> records;
-  return records;
+  // std::pair<double, std::vector<std::vector<std::string>>> records;
+  
+  std::pair<double, std::vector<std::vector<std::string>>> results;
+  if(location_ids.size()<2) return results;
+
+  std::vector<std::vector<std::string>> allPath;
+  std::vector<std::string> currPath;
+  for(std::string &location:location_ids)
+    currPath.push_back(location);
+  currPath.push_back(location_ids[0]);
+  double minDist = CalculatePathLength(currPath);
+  allPath.push_back(currPath);
+
+  bool stop = false;
+  while(!stop){
+    stop = true;
+    // currPath has at least three nodes
+    for(auto i=1;i<currPath.size()-1;i++){
+      for(auto k=i+1;k<currPath.size();k++){
+        std::reverse(currPath.begin()+i,currPath.begin()+k);
+        double currDist = CalculatePathLength(currPath);
+        if(currDist<minDist){
+          minDist = currDist;
+          allPath.push_back(currPath);
+          stop = false;
+        }else{
+          // Recover the change on the original path
+          std::reverse(currPath.begin()+i,currPath.begin()+k);
+        }
+      }
+    }
+  }
+  return std::pair<double, std::vector<std::vector<std::string>>>(minDist,allPath);
+
+
+
+  // return records;
 }
+
 
 /**
  * Given CSV filename, it read and parse locations data from CSV file,
@@ -601,7 +638,47 @@ bool TrojanMap::CycleDetection(std::vector<std::string> &subgraph, std::vector<d
  * @return {std::vector<std::string>}: location name that meets the requirements
  */
 std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k) {
+  // std::vector<std::string> res;
+  // return res;
+
   std::vector<std::string> res;
+  struct record
+  {
+    std::string id;
+    double dis;
+    bool operator<(const record &rhs) const
+    {
+      return dis < rhs.dis;
+    }
+  };
+  std::priority_queue<record> records;
+  std::string cur_id = GetID(name);
+  // O(N + KlogK)
+  for (const auto &it : data)
+  {
+    if (it.second.id == cur_id)
+      continue;
+    if (it.second.attributes.count(attributesName) > 0)
+    {
+      double dis = CalculateDistance(it.second.id, cur_id);
+      if (dis <= r && (records.size() < k || dis < records.top().dis))
+      {
+        if (records.size() >= k)
+        {
+          records.pop();
+        }
+        records.push({it.second.id, dis});
+      }
+    }
+  }
+  // O(KlogK)
+  while (records.size() != 0)
+  {
+    auto top = records.top();
+    records.pop();
+    res.push_back(top.id);
+  }
+  std::reverse(res.begin(), res.end());
   return res;
 }
 
