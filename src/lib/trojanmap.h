@@ -131,6 +131,14 @@ class TrojanMap {
   
   //----------------------------------------------------- User-defined functions
 std::vector<std::string> twoOptSwap(const std::vector<std::string> &path, int i, int k) ;
+
+//void Backtracking_Helper(std::vector<std::string> location_ids,std::vector<std::vector<std::string>> path, std::vector <std::string> cur_path);
+ void Backtracking_Helper(std::string start, std::unordered_map<std::string, double> distance,
+                             std::vector<std::string> location_ids,
+                             std::string curr_node, double curr_distance,
+                             std::vector<std::string> &curr_path,
+                             double &min_distance,  std::pair<double, std::vector<std::vector<std::string>>> &records,
+                             std::vector<std::string> &optimal_path) ;
 };
 
 #endif

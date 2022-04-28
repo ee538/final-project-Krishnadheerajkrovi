@@ -252,6 +252,10 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     std::vector<std::string> path;
     std::string start = GetID(location1_name);
     std::string end = GetID(location2_name);
+    if(start =="" || end==""){
+
+    }
+    else{
     std::cout << start + "   " + end << std::endl; 
     std::priority_queue <std::pair<double,std::string>,std::vector<std::pair<double,std::string>>,std::greater<std::pair<double,std::string>>> minim_heap;                 //Priority queue to implement Heap with <distance,node ID>
     std::unordered_map <std::string,double> dist;                 //Unordered Map to store the distance from root to current node
@@ -301,7 +305,9 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
     }
     path.push_back(start);
     std::reverse(path.begin(),path.end());
+    }
   return path;
+
 }
 /**
  * CalculateShortestPath_Bellman_Ford: Given 2 locations, return the shortest path which is a
@@ -372,6 +378,7 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTr
       double min_length = DBL_MAX;
       std::vector <std::string> temp;
       std::vector <std::string> cur_path;
+      std::map<std::string,bool> visited;
       temp.assign(location_ids.begin()+1,location_ids.end());
       std::sort(temp.begin(),temp.end());
       do{
@@ -398,41 +405,83 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTr
       return records;
 }
 
-std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Backtracking(
+  std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Backtracking(
                                     std::vector<std::string> location_ids) {
   std::pair<double, std::vector<std::vector<std::string>>> records;
-        if(location_ids.size()<=1){
-          std::vector<std::vector<std::string>> path;
-        return std::make_pair(0,path);
-        }
+    
+  double min_distance = INT_MAX;
+  std::vector<std::string> curr_path;
+ 
+  curr_path.push_back(location_ids[0]);
 
-      double min_length = DBL_MAX;
-      std::vector <std::string> temp;
-      std::vector <std::string> cur_path;
-      temp.assign(location_ids.begin()+1,location_ids.end());
-      std::sort(temp.begin(),temp.end());
-      do{
-        cur_path.push_back(location_ids[0]);
-        for(auto id:temp){
-          cur_path.push_back(id);
-        }
-        cur_path.push_back(location_ids[0]);
-      double cur_path_length = CalculatePathLength(cur_path);
-      cur_path.clear();
-      if(cur_path_length<min_length){
-        min_length = cur_path_length;
-        records.first = min_length;
-        std::vector <std::string> path ;
-        path.push_back(location_ids[0]);
-        for(auto id: temp){
-          path.push_back(id);
-        }
-        path.push_back(location_ids[0]);
-        records.second.push_back(path);
-      }
-      }
-      while(std::next_permutation(temp.begin(),temp.end()));
-      return records; 
+  
+  std::unordered_map<std::string, double> distance;
+
+  
+  distance[location_ids[0]] = 0;
+
+  
+  for (auto &id: location_ids) {
+    distance[id] = CalculateDistance(location_ids[0], id);
+  }
+
+  double curr_distance = 0;
+
+  std::vector<std::string> optimal_path;
+
+  Backtracking_Helper(location_ids[0], distance, location_ids, location_ids[0], curr_distance, 
+               curr_path, min_distance, records, optimal_path);
+
+  records.first = min_distance;
+
+  records.second.push_back(optimal_path);
+
+  for (auto &path: records.second) {
+    path.push_back(location_ids[0]);
+  }
+
+  std::cout << "records.second.size(): " << records.second.size() << std::endl;
+
+  return records;
+}
+
+void TrojanMap::Backtracking_Helper(std::string start, std::unordered_map<std::string, double> distance,
+                             std::vector<std::string> location_ids,
+                             std::string curr_node, double curr_distance,
+                             std::vector<std::string> &curr_path,
+                             double &min_distance,  std::pair<double, std::vector<std::vector<std::string>>> &records,
+                             std::vector<std::string> &optimal_path) {
+  // If the current node is the last node, update the minimum distance
+  if (curr_path.size() == distance.size()) {
+    if (curr_distance + distance[curr_node] < min_distance) {
+      min_distance = curr_distance + distance[curr_node];
+      optimal_path = curr_path;
+      optimal_path.push_back(location_ids[0]);
+    }
+    curr_path.push_back(location_ids[0]);
+    records.second.push_back(curr_path);
+    curr_path.pop_back();
+    return;
+  }
+  // If the current distance is larger than the minimum distance, return
+  if (curr_distance >= min_distance) {
+    return;
+  }
+
+  // Else evaluate all the children of the current node
+  for (int i = 0; i < location_ids.size(); i++) {
+    if (std::find(curr_path.begin(), curr_path.end(), location_ids[i]) == curr_path.end()) {
+      // Add the current node to the path
+      curr_path.push_back(location_ids[i]);
+
+      // Call backtracking recursively
+      Backtracking_Helper(start, distance, location_ids, location_ids[i], 
+                   curr_distance + CalculateDistance(curr_node, location_ids[i]),
+                   curr_path, min_distance, records, optimal_path);
+      // Remove the current node from the path
+      curr_path.pop_back();
+    }
+  }
 }
 
 std::vector<std::string> TrojanMap::twoOptSwap(const std::vector<std::string> &path, int i, int k) {
@@ -701,7 +750,6 @@ std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::
     locations.pop();
 
   }
-  // std::reverse(res.begin(),res.end());
   return res;
 }
 
