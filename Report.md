@@ -153,9 +153,9 @@ std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Brute_
 
 In this method, we start from the starting point and iterate through all the other locations checking for all possible path. We store all the paths and finally output the combination with the least cost. Brute-Force always returns an optimal path but it is computationally expensive.
 
-<p align="center"><img src="img/output0.avi" alt="TSP videos" width="500"/></p>
-
 **Time Complexity: O(N!)**
+
+<p align="center"><img src="img/src_lib_output0 (1).gif" alt="TSP videos" width="500"/></p>
 
 ## Step 4.2: Brute Force enhanced with Early Backtracking
 
@@ -168,6 +168,8 @@ This method is an enhanced version of the Brute Force Method. While traversing t
 
 **Time Complexity: O(N!)**
 
+<p align="center"><img src="img/output0_backtracking (1).gif" alt="TSP videos" width="500"/></p>
+
 ## Step 4.3: 2-Opt Heuristic
 
 ```c++
@@ -179,6 +181,8 @@ std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_2opt(
 
 **Time Complexity: O(N^2)**
 
+<p align="center"><img src="img/src_lib_output0_2opt (1).gif" alt="TSP videos" width="500"/></p>
+
 ## Step 5: Cycle Detection
 
 ```c++
@@ -187,7 +191,62 @@ bool CycleDetection(std::vector<double> &square);
 
 In this algorithm, a subgraph is created inside the main Trojan Map using the coordinates given. Them all the nodes lying within this subgraph are traversed, while keeping a track of the nodes visited. If a visited node is revisited, this proves that a cycle exists in the subgraph. If not, there is no cycle. The cycle, if exists, is plotted in the Trojan Map.
 
+**Time Complexity: O(N+E)**
+
 <p align="center"><img src="img/cycle1.png" alt="Trojan" width="500" /></p>
 <p align="center"><img src="img/cycle.png" alt="Trojan" width="500" /></p>
 
+## Step 6: Topological Sort
 
+```c++
+std::vector<std::string> DeliveringTrojan(std::vector<std::string> &location_names,
+                                            std::vector<std::vector<std::string>> &dependencies);
+```
+
+Topological Sort takes a list of locations to be visited and their respective dependencies, and returns a feasible path to traverse that covers all the locations and follows all the dependencies. The Locations and Dependencies are accessed via Read from CSV functions.
+
+**Time Complexity: O(N+E)**
+
+For example, 
+
+```shell
+Input: 
+location_names = {"Ralphs", "Chick-fil-A", "KFC"}
+dependencies = {{"Ralphs","KFC"}, {"Ralphs","Chick-fil-A"}, {"Chick-fil-A", "KFC"}}
+```
+
+Here, ```{"Ralphs","KFC"}``` means
+that Tommy must go to `Ralphs` prior to `KFC`.
+
+The Path based on the above locations and dependencies would be:
+
+<p align="center"><img src="img/sort.PNG" alt="Trojan" width="500" /></p>
+
+## Step 7: Find Nearby
+
+```c++
+std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::string name, double r, int k);
+```
+
+Find Nearby works similar to Google Maps places around you feature. Given the type of places we are interested (Example: Supermarket, Bar, Bank), the number of such places we need as well as the search radius, the Find Nearby returns the locations around us of that type within the search radius.
+
+For example,
+
+```shell
+**************************************************************
+
+Please input the attribute:bar
+Please input the locations:Ralphs
+Please input radius r:10
+Please input number k:10
+*************************Results******************************
+Find Nearby Results:
+1 901 Bar & Grill
+2 Rock & Reillys
+3 The Pearl
+**************************************************************
+```
+
+**Time Complexity: O(N+E)**
+
+<p align="center"><img src="img/bars.PNG" alt="Trojan" width="500" /></p>
