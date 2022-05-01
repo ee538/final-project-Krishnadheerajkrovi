@@ -22,10 +22,8 @@ double TrojanMap::GetLat(const std::string& id) {
   else
   {
     return data[id].lat;
-    // return 0;
+    
   }
-    // return 0;
-  //   return -1.0;
 }
 
 /**
@@ -42,9 +40,7 @@ double TrojanMap::GetLon(const std::string& id) {
   else
   {
     return data[id].lon;
-    // return 0;
   }
-    // return 0;
 }
 
 /**
@@ -160,12 +156,10 @@ std::string TrojanMap::FindClosestName(std::string name) {
     if (memo.count(data_name) < 1)
     {
       memo[data_name] = TrojanMap::CalculateEditDistance(name,data_name);
-      // std::cout<<memo[data_name]<<std::endl;
     }
     
   }
-  // return min_map.first;
-  // return memo.begin()->first;
+
   std::pair<std::string, int> min_name ("Target",10000);
   for (auto element:memo)
   {
@@ -176,8 +170,6 @@ std::string TrojanMap::FindClosestName(std::string name) {
     }
   }
   return min_name.first;
-  // std::string tmp = "";
-  // return tmp;
 }
 
 
@@ -256,7 +248,6 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
 
     }
     else{
-    std::cout << start + "   " + end << std::endl; 
     std::priority_queue <std::pair<double,std::string>,std::vector<std::pair<double,std::string>>,std::greater<std::pair<double,std::string>>> minim_heap;                 //Priority queue to implement Heap with <distance,node ID>
     std::unordered_map <std::string,double> dist;                 //Unordered Map to store the distance from root to current node
     for(auto nodes:data){
@@ -273,7 +264,6 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Dijkstra(
       std::string current = minim_heap.top().second;
       minim_heap.pop();
       if(current!=end){
-        //std::cout<<"HERE!!!";
         if(CalculateDistance(current,start)>dist[current]){
           continue;
         }
@@ -329,7 +319,6 @@ std::vector<std::string> TrojanMap::CalculateShortestPath_Bellman_Ford(
     }
     std::unordered_map <std::string,std::string> predecessor; //Unordered map to store the predecessor of the node
     dist[start] = 0;
-    //std::cout << data.size();
     if(start!=end){
       for (int i = 0; i < data.size()-1; i++){
         for (auto pair: data){
@@ -405,7 +394,7 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTr
       return records;
 }
 
-  std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Backtracking(
+   std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTrojan_Backtracking(
                                     std::vector<std::string> location_ids) {
   std::pair<double, std::vector<std::vector<std::string>>> records;
     
@@ -433,15 +422,7 @@ std::pair<double, std::vector<std::vector<std::string>>> TrojanMap::TravellingTr
                curr_path, min_distance, records, optimal_path);
 
   records.first = min_distance;
-
   records.second.push_back(optimal_path);
-
-  for (auto &path: records.second) {
-    path.push_back(location_ids[0]);
-  }
-
-  std::cout << "records.second.size(): " << records.second.size() << std::endl;
-
   return records;
 }
 
@@ -534,11 +515,11 @@ std::vector<std::string> TrojanMap::ReadLocationsFromCSVFile(std::string locatio
   std::fstream myFile;
   myFile.open(locations_filename, std::ios::in);
   std::string line;
-
+  getline(myFile,line);
   while (std::getline(myFile, line)) 
   {
     line.erase(std::remove(line.begin(),line.end(),','), line.end());
-    if(line!="")
+    if(line!="" )
       location_names_from_csv.push_back(line);
   }
   myFile.close();
@@ -590,33 +571,48 @@ std::vector<std::vector<std::string>> TrojanMap::ReadDependenciesFromCSVFile(std
  */
 std::vector<std::string> TrojanMap::DeliveringTrojan(std::vector<std::string> &locations,
                                                      std::vector<std::vector<std::string>> &dependencies){
-  std::vector<std::string> result;      
-  for (auto location: locations)
-  {
-    DFSHelper(location, result, dependencies);
-  } 
-  std::reverse(result.begin(),result.end());
-  return result;                                             
-}
+  std::vector<std::string> result;
+  std::unordered_map<std::string, std::vector<std::string>> adjacency; //adjacency list
+  std::map<std::string, bool> visited;
 
-void TrojanMap::DFSHelper(std::string &root, std::vector<std::string> &result, std::vector<std::vector<std::string>> &dependencies)
+  for(auto location: locations) {
+    std::vector<std::string> temp;
+    adjacency[location] = temp;
+  }
+
+  for(auto dependency: dependencies) {
+    adjacency[dependency[0]].push_back(dependency[1]);
+  }
+
+  for(auto location: locations)
+  {
+    visited[location]=false;
+  }
+
+  //DFS through each location
+  for(auto location: locations)
+  {
+    if(!visited[location])
+      DFS_Helper(location, visited, adjacency, result);
+  }
+  std::unique(result.begin(), result.end());
+  std::reverse(result.begin(), result.end());
+  return result;                                                     
+}  
+
+void TrojanMap::DFS_Helper(std::string location, std::map<std::string, bool>& visited, 
+                          std::unordered_map<std::string, std::vector<std::string> >&adjacency, std::vector<std::string>& result)
 {
-  if (std::count(result.begin(), result.end(), root) == 0)
+  visited[location] = true; 
+  for(const std::string neighbor: adjacency[location]) 
+  {
+    if(!visited[neighbor])
     {
-      for (int i = 0; i < dependencies.size(); i++)
-      {
-        if (dependencies[i][0] == root)
-        {
-          if (std::count(result.begin(), result.end(), dependencies[i][1]) == 0)
-          {
-            result.push_back(dependencies[i][1]);
-            DFSHelper(dependencies[i][1], result, dependencies);
-          }
-        }
-      }
-      result.push_back(root);
+      DFS_Helper(neighbor, visited, adjacency, result);
     }
-}
+  }
+  result.push_back(location); 
+}                                    
 
 /**
  * inSquare: Give a id retunr whether it is in square or not.
@@ -750,6 +746,7 @@ std::vector<std::string> TrojanMap::FindNearby(std::string attributesName, std::
     locations.pop();
 
   }
+  std::reverse(res.begin(),res.end());
   return res;
 }
 

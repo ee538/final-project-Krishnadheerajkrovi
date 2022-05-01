@@ -175,7 +175,6 @@ TEST(TrojanMapTest, CycleDetection) {
 // Test cycle detection function
 TEST(TrojanMapTest, TopologicalSort) {
   TrojanMap m;
-  
   std::vector<std::string> location_names = {"Ralphs", "Chick-fil-A", "KFC"};
   std::vector<std::vector<std::string>> dependencies = {{"Ralphs","KFC"}, {"Ralphs","Chick-fil-A"}, {"KFC","Chick-fil-A"}};
   auto result = m.DeliveringTrojan(location_names, dependencies);
@@ -247,4 +246,11 @@ TEST(TrojanMapTest, FindNearby) {
   auto result = m.FindNearby("supermarket", "Ralphs", 10, 10);
   std::vector<std::string> ans{"5237417649", "6045067406", "7158034317"};
   EXPECT_EQ(result, ans);
+  result = m.FindNearby("bar", "Ralphs", 10, 10);
+  ans = {"5567714035", "6045035789", "6045038065"};
+  EXPECT_EQ(result, ans);
+  result = m.FindNearby("bank", "Target", 10, 10);
+   ans = {"5237417651", "9591449441", "9591449465"};
+  EXPECT_EQ(result, ans);
 }
+
