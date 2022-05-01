@@ -153,6 +153,8 @@ std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Brute_
 
 In this method, we start from the starting point and iterate through all the other locations checking for all possible path. We store all the paths and finally output the combination with the least cost. Brute-Force always returns an optimal path but it is computationally expensive.
 
+<p align="center"><img src="img/output0.avi" alt="TSP videos" width="500"/></p>
+
 **Time Complexity: O(N!)**
 
 ## Step 4.2: Brute Force enhanced with Early Backtracking
