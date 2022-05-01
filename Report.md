@@ -131,3 +131,61 @@ The time complexity of Bellman-Ford can be reduced by implementing an Early Stop
 The code snippet for Early Stopping can be seen below:
 
 <p align="center"><img src="img/bf.PNG" alt="Trojan" width="500" /></p>
+
+## Step 3.2: Comparing the Performance of the 2 algorithms
+
+As mentioned before, Djikstra being a greedy algorithm has a faster performance than Bellman-Ford Algorithm. In our application, Djikstra outperforms Bellman-Ford by almost 5 times!
+
+<p align="center"><img src="img/perf.PNG" alt="Trojan" width="500" /></p>
+
+## Step 4: The Travelling Trojan Problem (AKA Travelling Salesman!)
+
+This is similar to the famous Travelling Salesman Problem. We assume that we are using a UAV that can fly directly from one point to another point. The fucntion is given a list of locations to visit. It identifies the shortest route that covers all the locations exactly once and goes back to the start point. The shortest path is plotted on the Trojan Map.
+
+We are implementing the following algorithms for this functionality:
+
+## Step 4.1: Brute Force
+
+```c++
+std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Brute_force(
+      std::vector<std::string> location_ids);
+```
+
+In this method, we start from the starting point and iterate through all the other locations checking for all possible path. We store all the paths and finally output the combination with the least cost. Brute-Force always returns an optimal path but it is computationally expensive.
+
+**Time Complexity: O(N!)**
+
+## Step 4.2: Brute Force enhanced with Early Backtracking
+
+```c++
+std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_Backtracking(
+      std::vector<std::string> location_ids);
+```
+
+This method is an enhanced version of the Brute Force Method. While traversing the nodes, we keep a track of the minimum distance. If the current distance exceeds the minimum distance, we exit this path and return.
+
+**Time Complexity: O(N!)**
+
+## Step 4.3: 2-Opt Heuristic
+
+```c++
+std::pair<double, std::vector<std::vector<std::string>>> TravellingTrojan_2opt(
+      std::vector<std::string> location_ids);
+```
+
+2-Opt is a local search algorithm that continiously swaps between nodes to check for the shortest distance path until there is no improvement in the path. Since it is a local search algorithm, sometimes it may not return the optimal path. However, it does give a good approximate of the ideal path.
+
+**Time Complexity: O(N^2)**
+
+## Step 5: Cycle Detection
+
+```c++
+bool CycleDetection(std::vector<double> &square);
+```
+
+In this algorithm, a subgraph is created inside the main Trojan Map using the coordinates given. Them all the nodes lying within this subgraph are traversed, while keeping a track of the nodes visited. If a visited node is revisited, this proves that a cycle exists in the subgraph. If not, there is no cycle. The cycle, if exists, is plotted in the Trojan Map.
+
+<p align="center"><img src="img/cycle1.png" alt="Trojan" width="500" /></p>
+<p align="center"><img src="img/cycle.png" alt="Trojan" width="500" /></p>
+
+
