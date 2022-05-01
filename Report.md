@@ -211,8 +211,8 @@ For example,
 
 ```shell
 Input: 
-location_names = {"Ralphs", "Chick-fil-A", "KFC"}
-dependencies = {{"Ralphs","KFC"}, {"Ralphs","Chick-fil-A"}, {"Chick-fil-A", "KFC"}}
+location_names = {"Ralphs", "Chick-fil-A", "KFC", "Target", "Arco"}
+dependencies = {{"Ralphs","KFC"}, {"Ralphs","Chick-fil-A"}, {"Chick-fil-A", "KFC"}, {"Ralphs", "Target"}, {"Target", "KFC"}, {"Arco", "Ralphs"}}
 ```
 
 Here, ```{"Ralphs","KFC"}``` means
@@ -220,7 +220,8 @@ that Tommy must go to `Ralphs` prior to `KFC`.
 
 The Path based on the above locations and dependencies would be:
 
-<p align="center"><img src="img/sort.PNG" alt="Trojan" width="500" /></p>
+<p align="center"><img src="img/topo.png" alt="Trojan" width="500" /></p>
+<p align="center"><img src="img/sortt.png" alt="Trojan" width="500" /></p>
 
 ## Step 7: Find Nearby
 
@@ -249,4 +250,19 @@ Find Nearby Results:
 
 **Time Complexity: O(N+E)**
 
-<p align="center"><img src="img/bars.PNG" alt="Trojan" width="500" /></p>
+<p align="center"><img src="img/nearr.png" alt="Trojan" width="500" /></p>
+
+## Conclusion
+
+The Trojan Map project was a good experience in building a real world application using the concepts learnt in the classes. Several graph and distance algorithms were implemented to build various parts of the project.
+
+The project was also a good opportunity to understand the importance of time complexity and building optimized algorithms without redundancies and compute calculations faster and better.
+
+Writing unit tests for each feature helped us in corner-case and error handling and also helped to gain a better understanding of how these underlying algorithms work.
+
+We also learnt to handle, organize and accessing data effectuvely.
+
+
+
+
+
